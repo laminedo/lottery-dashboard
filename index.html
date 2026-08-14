@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mega Millions Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          <div>
+            <h1 id="appTitle">Mega Millions</h1>
+            <span id="freshness" class="brand-sub">Loading...</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="segmented" id="gameSwitch" role="tablist" aria-label="Game">
+            <button class="seg-btn active" data-game="mega">Mega Millions</button>
+            <button class="seg-btn" data-game="powerball">Powerball</button>
+            <button class="seg-btn" data-game="hit5">Hit 5</button>
+            <button class="seg-btn" data-game="walotto">WA Lotto</button>
+          </div>
+          <button id="fetchHistoryButton" class="btn primary">&#8635; Update Draws</button>
+        </div>
+      </header>
+
+      <div id="jackpotTicker" class="jackpot-ticker" aria-label="Current estimated jackpots"></div>
+      <div id="dataHealth" class="data-health" aria-label="Bundled data freshness per game"></div>
+
+      <section class="kpi-strip" aria-label="Summary metrics">
+        <article class="kpi hero">
+          <span id="totalMetricLabel">Total Possible Combinations</span>
+          <strong id="totalPossible">290,472,336</strong>
+          <small id="ruleDescription">5 white balls 1-70 + Mega Ball 1-24</small>
+        </article>
+        <article class="kpi">
+          <span>Jackpot Draws Loaded</span>
+          <strong id="historyCount">...</strong>
+          <small id="coverageLabel">...</small>
+        </article>
+        <article class="kpi">
+          <span>Remaining Unhit Combos</span>
+          <strong id="remainingCount">...</strong>
+          <small>Pool minus loaded jackpot winners</small>
+        </article>
+        <article class="kpi accent">
+          <span>Latest Draw</span>
+          <strong id="latestDrawDate">...</strong>
+          <small><span id="latestDrawNumbers" class="mono">...</span></small>
+        </article>
+      </section>
+
+      <nav class="tabs" aria-label="Dashboard sections">
+        <button class="tab-button active" data-tab="overviewTab">Overview</button>
+        <button class="tab-button" data-tab="analyzerTab">Analyzer</button>
+        <button class="tab-button" data-tab="predictorTab">Predictor</button>
+        <button class="tab-button" data-tab="ticketsTab">Tickets <span id="ticketBadge" class="tab-badge hidden"></span></button>
+        <button class="tab-button" data-tab="winnersTab">Winners</button>
+        <button class="tab-button" data-tab="remainingTab">Remaining</button>
+        <button class="tab-button" data-tab="dataTab">Data</button>
+      </nav>
+
+      <!-- OVERVIEW -->
+      <section id="overviewTab" class="tab-panel active">
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head">
+              <span class="eyebrow">Exact match</span>
+              <h2>Jackpot Lookup</h2>
+            </div>
+            <p class="muted">Check whether a combination has ever won a jackpot in the loaded history. As you type, each number turns <b class="red-text">red</b> if it has been drawn before, <b class="green-text">green</b> if it has never been drawn.</p>
+            <form id="searchForm" class="number-form">
+              <div id="lookupFields" class="lookup-fields"></div>
+              <button type="submit" class="btn primary">Search</button>
+              <button type="button" id="clearLookupButton" class="btn ghost">Clear</button>
+            </form>
+            <div id="searchResult" class="result-box">Enter a combination above.</div>
+          </article>
+          <article class="card">
+            <div class="card-head">
+              <span class="eyebrow">Analyzer</span>
+              <h2>Quick Read</h2>
+            </div>
+            <div id="insightGrid" class="insight-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ANALYZER -->
+      <section id="analyzerTab" class="tab-panel">
+        <article class="card">
+          <div class="card-head row">
+            <div>
+              <span class="eyebrow">Frequency heatmap</span>
+              <h2 id="heatmapTitle">White Balls 1&ndash;70</h2>
+            </div>
+            <div class="segmented small" id="heatmapMode">
+              <button class="seg-btn active" data-mode="hot">Hot (frequency)</button>
+              <button class="seg-btn" data-mode="recent">Recent form</button>
+              <button class="seg-btn" data-mode="cold">Overdue (gap)</button>
+            </div>
+          </div>
+          <div id="whiteHeatmap" class="heatmap"></div>
+          <h3 class="sub-head bonus-only" id="megaHeatTitle">Mega Ball</h3>
+          <div id="megaHeatmap" class="heatmap mega bonus-only"></div>
+          <div class="legend">
+            <span>Low</span><span class="legend-bar"></span><span>High</span>
+            <span id="legendNote" class="muted"></span>
+          </div>
+        </article>
+
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Top numbers</span><h2 id="freqChartTitle">Most Frequent White Balls</h2></div>
+            <div id="whiteFreqChart" class="bar-chart"></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Sum distribution</span><h2>White-Ball Sums</h2></div>
+            <div id="sumChart" class="bar-chart columns"></div>
+          </article>
+        </div>
+
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Parity</span><h2>Odd / Even</h2></div>
+            <div id="oddEvenChart" class="bar-chart"></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Halves</span><h2>Low / High</h2></div>
+            <div id="lowHighChart" class="bar-chart"></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Co-occurrence</span><h2>Strongest Pairs</h2></div>
+            <div id="pairsList" class="pairs-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- PREDICTOR -->
+      <section id="predictorTab" class="tab-panel">
+        <article class="card">
+          <div class="card-head row">
+            <div>
+              <span class="eyebrow">Pattern engine</span>
+              <h2>Strategy Picks From Remaining Combinations</h2>
+            </div>
+            <button id="savePicksButton" class="btn">&#9829; Save Picks</button>
+            <button id="predictionRefreshButton" class="btn primary">&#8635; New Picks</button>
+          </div>
+          <div class="strategy-picks-bar">
+            <span class="strategy-label-tag">Strategy Picks:</span>
+            <div class="segmented" id="strategyPicker"></div>
+          </div>
+          <p id="strategyTagline" class="muted"></p>
+          <div id="predictionNotice" class="notice"></div>
+          <div id="predictionCards" class="pick-grid"></div>
+        </article>
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Signals</span><h2>Historical Pattern Summary</h2></div>
+            <div id="patternSummary" class="pattern-summary"></div>
+          </article>
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Method</span><h2>How Picks Are Scored</h2></div>
+            <ol id="predictionMethod" class="method-list"></ol>
+          </article>
+        </div>
+      </section>
+
+      <!-- TICKETS -->
+      <section id="ticketsTab" class="tab-panel">
+        <article class="card prize-verification-card">
+          <div class="card-head row">
+            <div>
+              <span class="eyebrow">Prize Verification Engine</span>
+              <h2>Saved Numbers &amp; Automated Draw Validation</h2>
+            </div>
+            <div id="liveSyncStatusBadge" class="live-sync-indicator">
+              <span class="live-pulse"></span>
+              <span id="liveSyncText">Live Draw Sync: Active</span>
+            </div>
+          </div>
+          <p class="muted">Your saved numbers are automatically validated against the latest official winning numbers. Matching balls, prize tiers, and win statuses (Jackpot, Tier 2, Partial Win) are dynamically computed in real-time.</p>
+          <div id="verificationSummary" class="verification-summary-strip"></div>
+          <div class="row notif-row">
+            <button id="testNotifButton" class="btn small">&#128276; Test desktop alert</button>
+            <span id="notifStatus" class="muted"></span>
+          </div>
+          <div id="ticketsList" class="tickets-list"></div>
+        </article>
+      </section>
+
+      <!-- WINNERS -->
+      <section id="winnersTab" class="tab-panel">
+        <article class="card">
+          <div class="card-head row">
+            <div><span class="eyebrow">Archive</span><h2>Jackpot-Winning Numbers</h2></div>
+            <input id="historyFilter" type="search" placeholder="Filter date or numbers" class="input">
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Draw Date</th><th>Winning Numbers</th><th class="bonus-header">Mega Ball</th><th>Combination Index</th></tr>
+              </thead>
+              <tbody id="historyTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- REMAINING -->
+      <section id="remainingTab" class="tab-panel">
+        <article class="card">
+          <div class="card-head row">
+            <div><span class="eyebrow">Remaining</span><h2>Combinations Never Drawn</h2></div>
+            <div class="btn-row">
+              <button id="remainingResetButton" class="btn ghost">First Page</button>
+              <button id="remainingNextButton" class="btn">Next Page &rarr;</button>
+            </div>
+          </div>
+          <div id="remainingSummary" class="notice"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Index</th><th>Numbers</th><th class="bonus-header">Mega Ball</th><th>Key</th></tr>
+              </thead>
+              <tbody id="remainingTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- DATA -->
+      <section id="dataTab" class="tab-panel">
+        <div class="grid-2">
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">History</span><h2>Load Draw History</h2></div>
+            <p class="muted">History updates automatically when the page opens (and every 6 hours while open): Mega Millions and Powerball from NY Open Data, Hit 5 from the latest published results. New draws are merged in - your imports are never overwritten.</p>
+            <div class="btn-row">
+              <button id="fetchHistoryButton2" class="btn primary">Check for New Draws</button>
+              <button id="exportCsvButton" class="btn">Download CSV</button>
+              <button id="clearDataButton" class="btn ghost">Clear Saved Data</button>
+            </div>
+            <div id="dataStatus" class="notice">No data loaded yet.</div>
+          </article>
+          <article class="card">
+            <div class="card-head"><span class="eyebrow">Import</span><h2>Your Own CSV / JSON</h2></div>
+            <label class="file-picker">
+              <input id="historyFileInput" type="file" accept=".csv,.json,text/csv,application/json">
+              <span id="fileName">Choose CSV or JSON file...</span>
+            </label>
+            <div class="btn-row">
+              <button id="uploadHistoryButton" class="btn">Import File</button>
+            </div>
+            <textarea id="importText" class="input area" placeholder="Or paste CSV / JSON history here"></textarea>
+            <div class="btn-row">
+              <button id="importHistoryButton" class="btn ghost">Import Pasted Data</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <footer class="foot">
+        <span id="methodologyText"></span>
+      </footer>
+      <div id="toast" role="status" aria-live="polite"></div>
+    </div>
+    <script src="engine.js"></script>
+    <script src="history_meta.js"></script>
+    <script src="store.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

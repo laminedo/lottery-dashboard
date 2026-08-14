@@ -1,0 +1,27 @@
+(function(global) {
+  global.HISTORY_META = {
+    "generatedAt": "2026-08-13T20:49:05-0700",
+    "games": {
+      "mega": {
+        "draws": 2524,
+        "newest": "2026-07-31",
+        "oldest": "2002-05-17"
+      },
+      "powerball": {
+        "draws": 1975,
+        "newest": "2026-08-03",
+        "oldest": "2010-02-03"
+      },
+      "hit5": {
+        "draws": 4139,
+        "newest": "2026-08-13",
+        "oldest": "2007-03-19"
+      },
+      "walotto": {
+        "draws": 5092,
+        "newest": "2026-08-03",
+        "oldest": "1984-08-04"
+      }
+    }
+  };
+})(typeof window !== 'undefined' ? window : (typeof globalThis !== 'undefined' ? globalThis : this));
