@@ -1,5 +1,18 @@
 [
  {
+  "draw_date": "2026-09-30",
+  "winning_numbers": [
+   4,
+   6,
+   13,
+   23,
+   33,
+   44
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2026-09-28",
   "winning_numbers": [
    7,
@@ -7917,6 +7930,19 @@
   "jackpot_amount": "N/A"
  },
  {
+  "draw_date": "2022-11-07",
+  "winning_numbers": [
+   10,
+   10,
+   33,
+   41,
+   47,
+   56
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2022-11-05",
   "winning_numbers": [
    20,
@@ -9087,6 +9113,19 @@
   "jackpot_amount": "N/A"
  },
  {
+  "draw_date": "2022-04-09",
+  "winning_numbers": [
+   6,
+   16,
+   18,
+   31,
+   62,
+   66
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2022-04-06",
   "winning_numbers": [
    6,
@@ -9225,6 +9264,19 @@
    32,
    44,
    49
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2022-03-12",
+  "winning_numbers": [
+   8,
+   19,
+   20,
+   37,
+   39,
+   61
   ],
   "bonus_numbers": [],
   "jackpot_amount": "N/A"
@@ -10772,6 +10824,19 @@
    47,
    61,
    63
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2021-04-28",
+  "winning_numbers": [
+   16,
+   18,
+   21,
+   35,
+   39,
+   53
   ],
   "bonus_numbers": [],
   "jackpot_amount": "N/A"
@@ -16029,6 +16094,19 @@
   "jackpot_amount": "N/A"
  },
  {
+  "draw_date": "2017-06-10",
+  "winning_numbers": [
+   3,
+   20,
+   26,
+   32,
+   38,
+   58
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2017-06-07",
   "winning_numbers": [
    5,
@@ -20015,6 +20093,19 @@
    45,
    53,
    58
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2014-06-28",
+  "winning_numbers": [
+   8,
+   9,
+   12,
+   34,
+   43,
+   56
   ],
   "bonus_numbers": [],
   "jackpot_amount": "N/A"
