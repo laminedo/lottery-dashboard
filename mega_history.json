@@ -18914,6 +18914,20 @@
   "jackpot_amount": "N/A"
  },
  {
+  "draw_date": "2013-10-18",
+  "winning_numbers": [
+   5,
+   20,
+   45,
+   48,
+   56
+  ],
+  "bonus_numbers": [
+   1
+  ],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2013-10-15",
   "winning_numbers": [
    4,
@@ -24472,6 +24486,20 @@
   "jackpot_amount": "N/A"
  },
  {
+  "draw_date": "2009-12-25",
+  "winning_numbers": [
+   4,
+   16,
+   44,
+   52,
+   54
+  ],
+  "bonus_numbers": [
+   20
+  ],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2009-12-22",
   "winning_numbers": [
    3,
@@ -27380,6 +27408,20 @@
   ],
   "bonus_numbers": [
    25
+  ],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2007-12-25",
+  "winning_numbers": [
+   19,
+   36,
+   37,
+   48,
+   52
+  ],
+  "bonus_numbers": [
+   8
   ],
   "jackpot_amount": "N/A"
  },
