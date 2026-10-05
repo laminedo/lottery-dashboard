@@ -1,5 +1,629 @@
 [
  {
+  "draw_date": "2026-10-04",
+  "winning_numbers": [
+   1,
+   8,
+   10,
+   20,
+   32
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-10-03",
+  "winning_numbers": [
+   19,
+   24,
+   26,
+   29,
+   30
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-10-02",
+  "winning_numbers": [
+   3,
+   21,
+   28,
+   29,
+   30
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-10-01",
+  "winning_numbers": [
+   2,
+   21,
+   22,
+   32,
+   41
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-30",
+  "winning_numbers": [
+   5,
+   6,
+   7,
+   16,
+   29
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-29",
+  "winning_numbers": [
+   14,
+   33,
+   34,
+   36,
+   40
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-28",
+  "winning_numbers": [
+   6,
+   7,
+   14,
+   24,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-27",
+  "winning_numbers": [
+   7,
+   18,
+   20,
+   23,
+   32
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-26",
+  "winning_numbers": [
+   4,
+   11,
+   16,
+   18,
+   40
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-25",
+  "winning_numbers": [
+   9,
+   19,
+   22,
+   29,
+   33
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-24",
+  "winning_numbers": [
+   2,
+   6,
+   16,
+   32,
+   40
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-23",
+  "winning_numbers": [
+   6,
+   9,
+   18,
+   24,
+   36
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-22",
+  "winning_numbers": [
+   6,
+   8,
+   21,
+   22,
+   40
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-21",
+  "winning_numbers": [
+   6,
+   17,
+   24,
+   26,
+   33
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-20",
+  "winning_numbers": [
+   1,
+   7,
+   8,
+   15,
+   29
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-19",
+  "winning_numbers": [
+   5,
+   10,
+   19,
+   22,
+   40
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-18",
+  "winning_numbers": [
+   4,
+   7,
+   17,
+   28,
+   35
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-17",
+  "winning_numbers": [
+   7,
+   13,
+   22,
+   26,
+   38
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-16",
+  "winning_numbers": [
+   14,
+   30,
+   33,
+   36,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-15",
+  "winning_numbers": [
+   5,
+   9,
+   11,
+   33,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-14",
+  "winning_numbers": [
+   5,
+   18,
+   19,
+   20,
+   22
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-13",
+  "winning_numbers": [
+   22,
+   28,
+   31,
+   41,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-12",
+  "winning_numbers": [
+   2,
+   6,
+   26,
+   31,
+   39
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-11",
+  "winning_numbers": [
+   20,
+   24,
+   36,
+   37,
+   41
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-10",
+  "winning_numbers": [
+   1,
+   14,
+   15,
+   29,
+   32
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-09",
+  "winning_numbers": [
+   17,
+   24,
+   26,
+   30,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-08",
+  "winning_numbers": [
+   19,
+   33,
+   34,
+   38,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-07",
+  "winning_numbers": [
+   3,
+   32,
+   34,
+   39,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-06",
+  "winning_numbers": [
+   4,
+   15,
+   25,
+   37,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-05",
+  "winning_numbers": [
+   7,
+   26,
+   38,
+   39,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-04",
+  "winning_numbers": [
+   1,
+   16,
+   17,
+   20,
+   26
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-03",
+  "winning_numbers": [
+   2,
+   5,
+   7,
+   24,
+   40
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-02",
+  "winning_numbers": [
+   18,
+   24,
+   31,
+   35,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-09-01",
+  "winning_numbers": [
+   13,
+   17,
+   26,
+   38,
+   39
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-31",
+  "winning_numbers": [
+   5,
+   13,
+   31,
+   35,
+   38
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-30",
+  "winning_numbers": [
+   1,
+   17,
+   21,
+   30,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-29",
+  "winning_numbers": [
+   13,
+   14,
+   16,
+   21,
+   32
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-28",
+  "winning_numbers": [
+   1,
+   2,
+   5,
+   6,
+   8
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-27",
+  "winning_numbers": [
+   3,
+   4,
+   15,
+   36,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-26",
+  "winning_numbers": [
+   1,
+   12,
+   27,
+   30,
+   31
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-25",
+  "winning_numbers": [
+   6,
+   14,
+   24,
+   25,
+   30
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-24",
+  "winning_numbers": [
+   10,
+   15,
+   21,
+   30,
+   31
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-23",
+  "winning_numbers": [
+   20,
+   21,
+   33,
+   36,
+   38
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-22",
+  "winning_numbers": [
+   8,
+   14,
+   15,
+   33,
+   38
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-21",
+  "winning_numbers": [
+   7,
+   8,
+   14,
+   26,
+   34
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-20",
+  "winning_numbers": [
+   8,
+   14,
+   19,
+   26,
+   37
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-19",
+  "winning_numbers": [
+   2,
+   8,
+   14,
+   17,
+   34
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-18",
+  "winning_numbers": [
+   8,
+   21,
+   30,
+   40,
+   41
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-17",
+  "winning_numbers": [
+   14,
+   16,
+   34,
+   41,
+   42
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-16",
+  "winning_numbers": [
+   5,
+   8,
+   19,
+   28,
+   41
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-15",
+  "winning_numbers": [
+   12,
+   15,
+   25,
+   27,
+   31
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
+  "draw_date": "2026-08-14",
+  "winning_numbers": [
+   2,
+   10,
+   23,
+   24,
+   38
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2026-08-13",
   "winning_numbers": [
    5,

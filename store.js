@@ -18,7 +18,7 @@
 */
 (function (globalScope) {
   const DB_NAME = 'lotto-central-db';
-  const DB_VERSION = 2;
+  const DB_VERSION = 3; // v3: rows keyed by id (date + Double Play) so secondary draws no longer overwrite the main draw
   const ACTIVE_GAMES = ['mega', 'powerball', 'hit5', 'walotto'];
   const TABLE_PREFIX = 'table_';
   const META_TABLE = 'table_meta';
@@ -31,6 +31,26 @@
   function getTableName(gameId) {
     return `${TABLE_PREFIX}${gameId}`;
   }
+
+  /* Newest first; on the same date the main draw sorts ahead of its Double Play draw. */
+  function compareDraws(a, b) {
+    if (a.draw_date !== b.draw_date) return b.draw_date > a.draw_date ? 1 : -1;
+    return (a.doublePlay ? 1 : 0) - (b.doublePlay ? 1 : 0);
+  }
+
+  /* Data saved by earlier versions merged the Powerball into the white balls and let
+     Double Play draws replace the main draw, so it is discarded once and re-fetched. */
+  function purgeLegacyLocalStorage() {
+    try {
+      if (localStorage.getItem('lotto-schema') === String(DB_VERSION)) return;
+      ACTIVE_GAMES.forEach((game) => {
+        localStorage.removeItem(`lotto-history-${game}`);
+        localStorage.removeItem(`lotto-meta-${game}`);
+      });
+      localStorage.setItem('lotto-schema', String(DB_VERSION));
+    } catch { /* ignore blocked storage */ }
+  }
+  purgeLegacyLocalStorage();
 
   function normalizeRecord(raw, gameId) {
     if (!raw) return null;
@@ -80,6 +100,13 @@
     record.jackpot = record.jackpot_amount;
     record.key = `${record.winning_numbers.join('-')}+${record.megaBall}`;
 
+    // Engine-derived fields survive the round trip through storage.
+    if (raw.doublePlay) record.doublePlay = true;
+    if (raw.legacy) record.legacy = true;
+    record.combinationIndex = Number.isInteger(raw.combinationIndex) ? raw.combinationIndex : null;
+    record.masterCsvLine = record.combinationIndex == null ? null : record.combinationIndex + 1;
+    record.id = record.doublePlay ? `${record.draw_date}|dp` : record.draw_date;
+
     return record;
   }
 
@@ -92,12 +119,15 @@
           request.onupgradeneeded = (event) => {
             const db = event.target.result;
             // Create dedicated table object stores for each active game
+            const stale = event.oldVersion < 3;
             ACTIVE_GAMES.forEach((game) => {
               const table = getTableName(game);
+              if (stale && db.objectStoreNames.contains(table)) db.deleteObjectStore(table);
               if (!db.objectStoreNames.contains(table)) {
-                db.createObjectStore(table, { keyPath: 'draw_date' });
+                db.createObjectStore(table, { keyPath: 'id' });
               }
             });
+            if (stale && db.objectStoreNames.contains(META_TABLE)) db.deleteObjectStore(META_TABLE);
             // Metadata & KV object stores
             if (!db.objectStoreNames.contains(META_TABLE)) {
               db.createObjectStore(META_TABLE, { keyPath: 'id' });
@@ -139,7 +169,7 @@
             const req = tx.objectStore(table).getAll();
             req.onsuccess = () => {
               const list = (req.result || []).map((r) => normalizeRecord(r, gameId)).filter(Boolean);
-              list.sort((a, b) => (b.draw_date > a.draw_date ? 1 : b.draw_date < a.draw_date ? -1 : 0));
+              list.sort(compareDraws);
               resolve(list);
             };
             req.onerror = () => resolve([]);
@@ -157,7 +187,7 @@
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed)) {
               records = parsed.map((r) => normalizeRecord(r, gameId)).filter(Boolean);
-              records.sort((a, b) => (b.draw_date > a.draw_date ? 1 : b.draw_date < a.draw_date ? -1 : 0));
+              records.sort(compareDraws);
               // Migrate into IndexedDB table
               if (records.length) {
                 this.insertDraws(gameId, records, false).catch(() => {});
@@ -176,22 +206,25 @@
       return memoryCache.get(gameId) || [];
     },
 
-    /* Insert or merge draws into the dedicated game table with deduplication by draw_date */
+    /* Insert or merge draws into the dedicated game table, deduplicated by id
+       (draw date, plus a marker for Double Play). Incoming draws replace saved ones. */
     async insertDraws(gameId, newDraws, updateMeta = true) {
       if (!Array.isArray(newDraws) || !newDraws.length) return 0;
-      const validDraws = newDraws.map((d) => normalizeRecord(d, gameId)).filter(Boolean);
-      if (!validDraws.length) return 0;
+      const incoming = new Map();
+      newDraws.forEach((d) => {
+        const record = normalizeRecord(d, gameId);
+        if (record) incoming.set(record.id, record);
+      });
+      if (!incoming.size) return 0;
+      const validDraws = Array.from(incoming.values());
 
       const current = await this.getDraws(gameId);
-      const existingDates = new Set(current.map((d) => d.draw_date));
-      const freshDraws = validDraws.filter((d) => !existingDates.has(d.draw_date));
-
-      // Merge into full array
       const mergedMap = new Map();
-      current.forEach((d) => mergedMap.set(d.draw_date, d));
-      freshDraws.forEach((d) => mergedMap.set(d.draw_date, d));
+      current.forEach((d) => mergedMap.set(d.id, d));
+      const freshCount = validDraws.filter((d) => !mergedMap.has(d.id)).length;
+      validDraws.forEach((d) => mergedMap.set(d.id, d));
       const mergedList = Array.from(mergedMap.values());
-      mergedList.sort((a, b) => (b.draw_date > a.draw_date ? 1 : b.draw_date < a.draw_date ? -1 : 0));
+      mergedList.sort(compareDraws);
 
       memoryCache.set(gameId, mergedList);
 
@@ -205,12 +238,17 @@
             const store = tx.objectStore(table);
             validDraws.forEach((d) => {
               // Store pure database record
-              store.put({
+              const row = {
+                id: d.id,
                 draw_date: d.draw_date,
                 winning_numbers: d.winning_numbers,
                 bonus_numbers: d.bonus_numbers,
-                jackpot_amount: d.jackpot_amount
-              });
+                jackpot_amount: d.jackpot_amount,
+                combinationIndex: d.combinationIndex
+              };
+              if (d.doublePlay) row.doublePlay = true;
+              if (d.legacy) row.legacy = true;
+              store.put(row);
             });
           }
         } catch { /* ignore */ }
@@ -229,7 +267,32 @@
         });
       }
 
-      return freshDraws.length;
+      return freshCount;
+    },
+
+    /* Remove every saved draw and sync marker for one game (IndexedDB, memory, localStorage). */
+    async clearDraws(gameId) {
+      memoryCache.delete(gameId);
+      metaCache.delete(gameId);
+      const db = await openDb();
+      if (db) {
+        await new Promise((resolve) => {
+          try {
+            const tx = db.transaction([getTableName(gameId), META_TABLE], 'readwrite');
+            tx.objectStore(getTableName(gameId)).clear();
+            tx.objectStore(META_TABLE).delete(gameId);
+            tx.oncomplete = resolve;
+            tx.onerror = resolve;
+            tx.onabort = resolve;
+          } catch {
+            resolve();
+          }
+        });
+      }
+      try {
+        localStorage.removeItem(`lotto-history-${gameId}`);
+        localStorage.removeItem(`lotto-meta-${gameId}`);
+      } catch { /* ignore */ }
     },
 
     /* Get the latest official winning draw from a game table */

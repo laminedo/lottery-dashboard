@@ -30,6 +30,9 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 HERE = Path(__file__).parent.resolve()
+WHITE_PICK = 5  # white balls per draw for the Socrata games (Mega Millions, Powerball)
+MONTHS = {m: i + 1 for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"])}
 USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)"
 
 ACTIVE_GAMES = {
@@ -159,6 +162,9 @@ def sync_socrata_game(game_id, cfg):
 
             winning_nums = [int(x) for x in winning_str.strip().split() if x.isdigit()]
             bonus_nums = [int(mega_str)] if mega_str.isdigit() else []
+            # Powerball rows carry the Powerball as the 6th winning number (no separate field).
+            if not bonus_nums and len(winning_nums) == WHITE_PICK + 1:
+                bonus_nums = [winning_nums.pop()]
             jackpot_amount = item.get("jackpot_amount") or item.get("estimated_jackpot") or "N/A"
 
             norm = {
@@ -188,25 +194,24 @@ def sync_socrata_game(game_id, cfg):
 def parse_wa_official_html(html, has_bonus=False):
     """Parse Washington State Lottery past drawings HTML tables."""
     results = []
-    # Pattern for row with date and numbers
-    # e.g., <td>08/11/2026</td> ... <td>3 15 24 38 42</td>
-    rows = re.findall(r"<tr[^>]*>([\s\S]*?)</tr>", html, re.IGNORECASE)
-    for row in rows:
-        tds = re.findall(r"<td[^>]*>([\s\S]*?)</td>", row, re.IGNORECASE)
-        if len(tds) < 2:
+    # Each drawing is a table headed by <p class="h2-like">Sat, Oct 03, 2026</p>
+    # followed by <td class="game-balls"><ul><li>07</li>...</ul>.
+    pattern = re.compile(
+        r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun),\s+([A-Za-z]{3})[a-z]*\s+(\d{1,2}),\s+(\d{4})\s*</p>"
+        r"[\s\S]{0,2000}?game-balls[\s\S]{0,200}?<ul>([\s\S]{0,4000}?)</ul>"
+    )
+    seen = set()
+    for mon, day, year, block in pattern.findall(html):
+        month = MONTHS.get(mon.lower())
+        if not month:
             continue
-        # Extract date
-        date_match = re.search(r"(\d{1,2})/(\d{1,2})/(\d{4})", tds[0])
-        if not date_match:
+        draw_date = f"{int(year):04d}-{month:02d}-{int(day):02d}"
+        if draw_date in seen:  # the page repeats each drawing for its small-viewport layout
             continue
-        m, d, y = date_match.groups()
-        draw_date = f"{int(y):04d}-{int(m):02d}-{int(d):02d}"
-
-        # Extract numbers from row
-        nums = [int(x) for x in re.findall(r"\b\d{1,2}\b", tds[1])]
+        nums = [int(x) for x in re.findall(r"<li>\s*(\d{1,2})\s*</li>", block)]
         if not nums:
             continue
-
+        seen.add(draw_date)
         results.append({
             "draw_date": draw_date,
             "winning_numbers": sorted(nums),

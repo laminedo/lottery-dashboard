@@ -112,11 +112,6 @@ function setActiveGameButton() {
   });
 }
 
-function loadSavedGame() {
-  const saved = localStorage.getItem(selectedGameKey);
-  if (saved && E.GAME_CONFIGS[saved]) currentGame = saved;
-}
-
 function lastUpdatedLabel() {
   const stamp = localStorage.getItem(updatedKey());
   if (!stamp) return 'never updated';
@@ -565,10 +560,8 @@ const LIVE_APIS = {
   powerball: 'https://data.ny.gov/resource/d6yy-54nr.json?$limit=2000&$order=draw_date%20DESC'
 };
 const CORS_RELAYS = [
-  (u) => `https://api.cors.lol/?url=${encodeURIComponent(u)}`,
-  (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
 ];
 /* How many days old the newest saved draw may be before auto-updating. */
 const STALE_DAYS = { mega: 3, powerball: 3, hit5: 1.5, walotto: 2 };
@@ -772,6 +765,9 @@ async function fetchLatest() {
 
   // Deduplicate and insert into dedicated centralized table
   const added = await LottoStore.insertDraws(cfg.id, incoming);
+  try { localStorage.setItem(`lotto-updated-${cfg.id}`, new Date().toISOString()); } catch { /* ignore blocked storage */ }
+  // The user switched games while this fetch was running: keep the saved draws, leave the view alone.
+  if (cfg.id !== currentGame) return added;
   records = await LottoStore.getDraws(cfg.id);
   winnerIndex = E.buildWinnerIndex(records);
   refresh();
@@ -1286,12 +1282,12 @@ els.exportCsvButton.addEventListener('click', () => {
   showToast(`Downloaded ${formatNumber(records.length)} draws as CSV.`);
 });
 
-els.clearDataButton.addEventListener('click', () => {
-  localStorage.removeItem(storageKey());
+els.clearDataButton.addEventListener('click', async () => {
+  await LottoStore.clearDraws(currentGame);
   localStorage.removeItem(updatedKey());
-  loadSaved();
+  await loadSaved();
   refresh();
-  showToast('Saved data cleared for this game.');
+  showToast('Saved data cleared for this game. Bundled archive reloaded.');
 });
 
 els.historyFileInput.addEventListener('change', () => {

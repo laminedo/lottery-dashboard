@@ -201,7 +201,7 @@
       numbers = pickNumberSeries(lower, ['ball', 'num', 'n', 'ball_', 'white_', 'number_']
         .map((prefix) => Array.from({ length: pick }, (_, i) => `${prefix}${i + 1}`)));
     }
-    const megaRaw = lower.mega_ball || lower.megaball || lower.mega || lower.mb || lower.bonus || lower.powerball || lower.power_ball || lower.pb;
+    const megaRaw = lower.mega_ball || lower.megaball || lower.mega || lower.mb || lower.bonus || lower.bonus_numbers || lower.powerball || lower.power_ball || lower.pb;
     if (!Number.isInteger(megaBall)) megaBall = Number(String(megaRaw || '').match(/\d+/)?.[0]);
     if (config.hasBonus === false) megaBall = 1;
 
@@ -242,7 +242,10 @@
     const records = [];
     for (const row of rows) {
       const record = normalizeHistoryRow(row, config);
-      if (record) records.push(record);
+      if (record) {
+        if (row && (row.doublePlay || row.double_play)) record.doublePlay = true;
+        records.push(record);
+      }
       // Secondary draw (e.g. Powerball Double Play): track its winning combination too.
       if (config.doublePlayField && row) {
         const dpRaw = row[config.doublePlayField];
@@ -292,11 +295,11 @@
      Used for games without an open-data API (Hit 5, WA Lotto, Pick 3). */
   function parseLooseDrawText(text, config) {
     const pick = config.whitePick || 5;
-    const sep = config.allowRepeat ? '[\s,\u2013-]+' : '\s*,\s*';
+    const sep = config.allowRepeat ? '[\\s,\u2013-]+' : '\\s*,\\s*';
     const months = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
     const plain = String(text).replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/gi, ' ');
     const re = new RegExp(
-      `(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4})\D{0,40}?(\d{1,2}(?:${sep}\d{1,2}){${pick - 1}})(?!${sep}\d)`,
+      `(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\\.?\\s+(\\d{1,2}),?\\s+(\\d{4})\\D{0,40}?(\\d{1,2}(?:${sep}\\d{1,2}){${pick - 1}})(?!${sep}\\d)`,
       'g'
     );
     const rows = [];
@@ -357,11 +360,21 @@
     return series.sort((a, b) => b.value - a.value || String(a.label).localeCompare(String(b.label)));
   }
 
+  /* Draws usable for statistics: inside the current ball matrix and era. Out-of-range
+     draws are skipped even when their legacy flag is missing (older saved data). */
+  function statsRecords(records, config) {
+    const min = config.minNumber ?? 1;
+    return records.filter((r) => !r.legacy
+      && (!config.statsSince || r.drawDate >= config.statsSince)
+      && r.megaBall >= 1 && r.megaBall <= config.megaMax
+      && r.numbers.every((n) => n >= min && n <= config.whiteMax));
+  }
+
   function getAnalysis(records, config) {
     // When a game's ball matrix changed historically, stats only use the current era;
     // the full archive still powers jackpot lookup / duplicate exclusion.
     const allRecords = records;
-    if (config.statsSince) records = records.filter((r) => !r.legacy && r.drawDate >= config.statsSince);
+    records = statsRecords(records, config);
     const archiveCoverage = allRecords.length
       ? `${allRecords[allRecords.length - 1].drawDate || 'Unknown'} to ${allRecords[0].drawDate || 'Unknown'}`
       : 'No history loaded';
@@ -475,7 +488,7 @@
       ...(hasBonus ? [{ title: `${ballLabel} concentration`, body: `${hotMega.number} leads with ${hotMega.count} appearances; ${overdueMega.number} has the longest gap at ${overdueMega.drawsSinceSeen} draws.` }] : []),
       { title: 'Most repeated pair', body: topPair ? `Pair ${topPair.pair} has appeared together ${topPair.count} times.` : 'No repeated pair data yet.' },
       { title: 'Consecutive-number pattern', body: `${(consecutiveRate * 100).toFixed(1)}% of draws include at least one consecutive white-ball pair.` },
-      { title: 'Latest loaded draw', body: latest ? `${latest.drawDate}: ${latest.numbers.join(', ')} + ${latest.megaBall}.` : 'No latest draw available.' }
+      { title: 'Latest loaded draw', body: latest ? `${latest.drawDate}: ${latest.numbers.join(', ')}${hasBonus ? ` + ${latest.megaBall}` : ''}.` : 'No latest draw available.' }
     ];
   }
 
@@ -982,7 +995,7 @@
   function getPredictions(records, winnerIndex, config, strategyId = 'balanced', salt = '') {
     const strategy = STRATEGIES[String(strategyId).toLowerCase()] || STRATEGIES.balanced;
     // Stats respect the current ball-matrix era; exclusion still uses full history.
-    const stats = buildPatternStats(config.statsSince ? records.filter((r) => !r.legacy && r.drawDate >= config.statsSince) : records, config);
+    const stats = buildPatternStats(statsRecords(records, config), config);
     const random = createPrng(hashString(`${records.length}:${records[0]?.key || ''}:${strategy.id}:${salt}`));
     const whiteWeights = strategyWhiteWeights(strategy.id, stats, config);
     const megaWeights = strategyMegaWeights(strategy.id, stats, config);
