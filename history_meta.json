@@ -1,30 +1,30 @@
 {
- "generatedAt": "2026-10-18T10:31:02+0000",
+ "generatedAt": "2026-10-19T12:21:47+0000",
  "syncStatus": "active",
  "games": {
   "mega": {
    "draws": 2549,
    "newest": "2026-10-16",
    "addedThisSync": 0,
-   "lastSync": "2026-10-18T10:31:02+0000"
+   "lastSync": "2026-10-19T12:21:47+0000"
   },
   "powerball": {
    "draws": 2013,
    "newest": "2026-10-17",
-   "addedThisSync": 1,
-   "lastSync": "2026-10-18T10:31:02+0000"
+   "addedThisSync": 0,
+   "lastSync": "2026-10-19T12:21:47+0000"
   },
   "hit5": {
-   "draws": 4204,
-   "newest": "2026-10-17",
+   "draws": 4205,
+   "newest": "2026-10-18",
    "addedThisSync": 1,
-   "lastSync": "2026-10-18T10:31:02+0000"
+   "lastSync": "2026-10-19T12:21:47+0000"
   },
   "walotto": {
    "draws": 5124,
    "newest": "2026-10-17",
-   "addedThisSync": 1,
-   "lastSync": "2026-10-18T10:31:02+0000"
+   "addedThisSync": 0,
+   "lastSync": "2026-10-19T12:21:47+0000"
   }
  }
 }
