@@ -1,5 +1,17 @@
 [
  {
+  "draw_date": "2026-11-10",
+  "winning_numbers": [
+   8,
+   16,
+   24,
+   37,
+   41
+  ],
+  "bonus_numbers": [],
+  "jackpot_amount": "N/A"
+ },
+ {
   "draw_date": "2026-11-09",
   "winning_numbers": [
    8,
